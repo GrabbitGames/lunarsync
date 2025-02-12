@@ -3,201 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Collection</title>
-    <style>
-        /* CSS for layout and design */
-        .container {
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 10px;
-        }
-
-        .square_btn img {
-            width: 103px;
-            height: 103px;
-        }
-
-        .square_btn {
-            display: inline-block;
-            text-align: center;
-            height: 115px;
-            width: 115px;
-            padding: 30px;
-            text-decoration: none;
-            text-align: center;
-            border: solid 2px transparent;
-            border-radius: 5px;
-            transition: .2s;
-        }
-
-        .square_btn:hover {
-            background: rgba(255, 255, 255, 0.144);
-            color: white;
-            border: solid 2px rgba(255, 255, 255, 0.26);
-            border-radius: 5px;
-            transform: scale(1.09);
-            transition: 0.2s;
-        }
-
-        .button-container>button {
-            width: calc(25% - 20px);
-        }
-
-        .button-container>button:nth-child(4n+1) {
-            margin-left: 0;
-        }
-
-        .button-container>button:nth-child(n+5) {
-            margin-top: 20px;
-        }
-
-        #search-bar {
-            width: 80%;
-            padding: 10px;
-            margin-top: 20px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        .recommended {
-            color: red;
-            font-weight: bold;
-        }
-
-        @keyframes fade-in {
-            0% {
-                opacity: 0;
-            }
-
-            100% {
-                opacity: 1;
-            }
-        }
-    </style>
+    <title>Games</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-<div class="container">
-    <input type="text" id="search-bar" placeholder="Search games...">
-
-    <div class="button-container" id="game-cards">
-        <!-- Game cards will be injected here -->
+    <div class="container">
+        <h1>Game Collection</h1>
+        <input type="text" id="search" placeholder="Search games...">
+        <div class="button-container" id="gameList"></div>
     </div>
-</div>
 
-<script>
-    // User's list of games
-    const gamesList = [
-        "10-minutes-till-dawn", "2048-cupcakes", "2048", "3d-mini-golf", "a-small-world-cup",
-        "agent-walker-vs-skibidi-toilets", "among-us", "animal-arena", "armed-forces-io", "awesome-tanks-2",
-        "backrooms", "bacon-may-die", "ball-dodge", "bank-robbery-2", "bank-robbery", "basket-random",
-        "basketball-stars", "battle-wheels", "battleops-the-polygon-online", "big-tower-tiny-square", "bitlife",
-        "blockpost", "blumgi-ball", "blumgi-bloom", "blumgi-castle", "blumgi-dragon", "blumgi-racers", "blumgi-rocket",
-        "blumgi-slime", "blumgi-soccer", "bouncy-basketball", "buenos-aires", "bullet-bros", "bumper-cars-soccer",
-        "burger-bounty", "burrito-bison", "candy-crush", "chicago", "chicken-merge", "choppy-orc", "classic-backgammon",
-        "cluster-rush", "coloron", "cookie-clicker", "core-ball", "cow-bay", "crazy-bikes", "crazy-cars", "crossy-road",
-        "csgo-clicker", "cyberpunk-resistance", "dadish-2", "dadish-3", "dadish-3d", "dadish", "day-of-meat-castle",
-        "day-of-meat-radiation", "death-run-3d", "dreadhead-parkour", "drift-boss", "drive-mad", "dune", "eaglercraft",
-        "economical-2", "economical", "eggy-car", "epic-shooter", "fantasy-fest", "fish-squad", "flip-bros", "four-colors",
-        "funny-battle-2", "funny-battle", "funny-shooter-2", "funny-shooter", "geometry-dash-scratch", "geometry-dash",
-        "getaway-shootout", "gladihoppers", "gobble", "gold-digger-fr-vr", "golorfull", "goober-world", "greece-love-odyssey",
-        "grey-box-testing", "gunspin", "happy-wheels", "haunted-hood", "hawaii", "head-soccer-2023", "hefty-shaman-deluxe",
-        "hide-and-smash", "horde-killer-you-vs-100", "idle-ants", "idle-breakout", "idle-farming-business", "idle-gang",
-        "idle-light-city", "idle-mining-empire", "idle-money-tree", "idle-pet-business", "idle-startup-tycoon",
-        "idle-toilet-tycoon", "iron-snout", "jacksmith", "just-fall-lol", "karlsont", "kiwi-clicker", "ks-2-teams",
-        "level-devil", "london", "master-checkers", "master-chess", "merge-party", "merge-tycoon", "mimelet", "monaco",
-        "monkey-mart", "monkeytype-lite", "monster-tracks", "moto-x3m", "murder", "n-gon", "neon-flytron-cyberpunk-racer",
-        "new-super-mario-bros", "new-york", "nut-simulator", "ohh1", "olly-the-paw", "only-up-parkour", "ovo-2", "ovo-dimensions",
-        "ovo", "paper-io-2", "party-toons", "penalty-shooters-2", "plinko", "poor-bunny", "poor-eddie", "popcat-classic",
-        "pr0xy", "president-simulator", "push-your-luck", "rabbit-samurai-2", "rabbit-samurai", "race-survival-arena-king",
-        "recoil", "retro-bowl-college", "retro-bowl", "retro-highway", "rio", "rocket-buddy", "rocket-soccer-derby",
-        "rooftop-snipers-2", "rooftop-snipers", "roper", "rowdy-city-wrestling", "rusher-crusher", "sausage-flip",
-        "save-the-hostages", "seoul", "shenzhen-showdown", "ski-slopes", "skibidi-bosses-vs-cameraman", "slope", "smash-karts",
-        "sniper-shot", "sniper-vs-sniper", "snow-rider-3d", "soccer-random", "soccer-skills-euro-cup", "soccer-skills-world-cup",
-        "soundboard", "space-thing", "space-wars-battleground", "squid-battle-simulator", "squid-shooter", "stack",
-        "stick-duel-battle", "stick-fighter", "stick-merge", "stickman-bike", "stickman-climb-2", "stickman-golf",
-        "stickman-hook-halloween", "stickman-hook", "super-fowlst-2", "super-tunnel-rush", "superbrawl",
-        "superhot", "swerve", "swingo", "table-tennis-world-tour", "tag-2", "tag", "tanuki-sunset", "temple-of-boom",
-        "the-spear-stickman", "time-shooter-2", "time-shooter-3", "tiny-fishing", "tokyo", "tomb-of-the-mask", "tube-jumpers",
-        "tunnel-rush-2", "tunnel-rush", "turbo-moto-racer", "underwater", "unicycle-hero", "unicycle-legend", "vegas-queens",
-        "vex-3", "vex-4", "vex-5", "vex-6", "vex-7", "vex-8", "vex-challenges", "volley-random", "watermelon-game",
-        "we-become-what-we-behold", "wordle-unlimited", "yohoho-io", "you-vs-100-skibidi-toilets", "zombies-shooter-2"
-    ];
+    <script>
+        const games = [
+            "rooftop-snipers",
+            "slope",
+            "drift-hunters",
+            "basketball-stars",
+            "tunnel-rush",
+            "getting-over-it",
+            "10-minutes-till-dawn"
+        ];
 
-    // Shuffle the games list
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-    }
-
-    // Generate Game Cards HTML
-    function generateGameCards(games) {
-        const gameCardsContainer = document.getElementById("game-cards");
-        gameCardsContainer.innerHTML = "";
-
-        games.forEach(game => {
-            const gameCard = document.createElement("button");
-            gameCard.classList.add("square_btn");
-
-            // Try different variations for images and URLs
+        function formatGameVariations(name) {
+            const baseName = name.replace(/-/g, ''); // Remove dashes
             const variations = [
-                `${game}`, `${game.replace(/-/g, '')}`, `${game.replace(/-/g, ' ').toLowerCase()}`
+                name,                             // Original name
+                baseName,                         // No dashes
+                name.toLowerCase(),               // Lowercase
+                baseName.toLowerCase(),           // Lowercase no dashes
+                name.replace(/-/g, ' '),          // Spaces instead of dashes
+                baseName.replace(/-/g, ' ')       // Spaces no dashes
             ];
+            return variations;
+        }
 
-            // Try to find a valid image by checking variations
-            const imageExtension = ['.jpg', '.png', '.gif'];
-            let gameImage = '';
-            for (let i = 0; i < variations.length; i++) {
-                for (let ext of imageExtension) {
-                    if (checkIfImageExists(`public/assets/images/${variations[i]}${ext}`)) {
-                        gameImage = `public/assets/images/${variations[i]}${ext}`;
-                        break;
+        function generateImagePaths(gameName) {
+            const baseNames = formatGameVariations(gameName);
+            const extensions = [".png", ".jpg", ".jpeg"];
+            let paths = [];
+
+            baseNames.forEach(name => {
+                extensions.forEach(ext => {
+                    paths.push(`public/assets/images/${name}${ext}`);
+                });
+            });
+
+            return paths;
+        }
+
+        function generateGamePaths(gameName) {
+            const baseNames = formatGameVariations(gameName);
+            return baseNames.map(name => `public/assets/fonts/${name}`);
+        }
+
+        function createGameCard(gameName) {
+            const gameLink = document.createElement("a");
+            gameLink.href = generateGamePaths(gameName)[0]; // Try first generated path
+            gameLink.className = "square_btn";
+
+            const img = document.createElement("img");
+            img.alt = gameName;
+
+            const tryImages = generateImagePaths(gameName);
+            let imgLoaded = false;
+
+            tryImages.forEach((src, index) => {
+                const testImg = new Image();
+                testImg.src = src;
+                testImg.onload = () => {
+                    if (!imgLoaded) {
+                        img.src = src;
+                        imgLoaded = true;
                     }
-                }
-            }
+                };
+                testImg.onerror = () => {
+                    if (index === tryImages.length - 1 && !imgLoaded) {
+                        img.src = "public/assets/images/default-game.png";
+                    }
+                };
+            });
 
-            if (gameImage) {
-                const img = document.createElement("img");
-                img.src = gameImage;
-                img.alt = game;
-                gameCard.appendChild(img);
-            }
+            gameLink.appendChild(img);
+            return gameLink;
+        }
 
-            // Try to find the game URL
-            const gameUrl = `${variations[0]}.html`;
-            gameCard.onclick = () => window.location.href = gameUrl;
+        function displayGames() {
+            const gameList = document.getElementById("gameList");
+            gameList.innerHTML = "";
 
-            // Recommended games
-            if (Math.random() < 0.1) {
-                const fireEmoji = document.createElement("span");
-                fireEmoji.textContent = "🔥 ";
-                gameCard.appendChild(fireEmoji);
-            }
+            const shuffledGames = games.sort(() => Math.random() - 0.5);
+            shuffledGames.forEach((game, index) => {
+                const card = createGameCard(game);
+                if (index < 8) card.innerHTML += "🔥"; // Recommended
+                gameList.appendChild(card);
+            });
+        }
 
-            gameCardsContainer.appendChild(gameCard);
+        document.getElementById("search").addEventListener("input", function() {
+            const searchValue = this.value.toLowerCase();
+            const gameCards = document.querySelectorAll(".square_btn");
+
+            gameCards.forEach(card => {
+                const gameName = card.href.split('/').pop().replace(/-/g, ' ').toLowerCase();
+                card.style.display = gameName.includes(searchValue) ? "block" : "none";
+            });
         });
-    }
 
-    // Helper function to check if image exists
-    function checkIfImageExists(url) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('HEAD', url, false);
-        xhr.send();
-        return xhr.status === 200;
-    }
-
-    // Initialize the page
-    shuffleArray(gamesList);
-    generateGameCards(gamesList);
-</script>
-
+        displayGames();
+    </script>
 </body>
 </html>
