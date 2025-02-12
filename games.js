@@ -1,5 +1,5 @@
-# User's list of games
-games_list = [
+// List of games (your original list)
+const gamesList = [
     "10-minutes-till-dawn", "2048-cupcakes", "2048", "3d-mini-golf", "a-small-world-cup",
     "agent-walker-vs-skibidi-toilets", "among-us", "animal-arena", "armed-forces-io", "awesome-tanks-2",
     "backrooms", "bacon-may-die", "ball-dodge", "bank-robbery-2", "bank-robbery", "basket-random",
@@ -34,55 +34,45 @@ games_list = [
     "tunnel-rush-2", "tunnel-rush", "turbo-moto-racer", "underwater", "unicycle-hero", "unicycle-legend", "vegas-queens",
     "vex-3", "vex-4", "vex-5", "vex-6", "vex-7", "vex-8", "vex-challenges", "volley-random", "watermelon-game",
     "we-become-what-we-behold", "wordle-unlimited", "yohoho-io", "you-vs-100-skibidi-toilets", "zombies-shooter-2"
-]
+];
 
-# Shuffle the games list
-import random
-random.shuffle(games_list)
+// Shuffle the list and pick recommended games
+function shuffleGames(games) {
+    return games.sort(() => Math.random() - 0.5);
+}
 
-# Select 2-8 random games as recommended
-def add_recommended_games(games):
-    recommended_count = random.randint(2, 8)  # 2 to 8 recommended games
-    recommended_games = []
-    for _ in range(recommended_count):
-        random_game = games[random.randint(0, len(games) - 1)]
-        if random_game not in recommended_games:
-            recommended_games.append(random_game)
-    return recommended_games
+function addRecommended(games) {
+    const recommendedCount = Math.floor(Math.random() * 7) + 2; // 2 to 8 random games
+    const recommendedGames = new Set();
+    while (recommendedGames.size < recommendedCount) {
+        const randomGame = games[Math.floor(Math.random() * games.length)];
+        recommendedGames.add(randomGame);
+    }
+    return recommendedGames;
+}
 
-recommended_games = add_recommended_games(games_list)
+const shuffledGames = shuffleGames(gamesList);
+const recommendedGames = addRecommended(shuffledGames);
 
-# Generate games.js content
-games_js_code = """
-const games = [
-"""
-# List of allowed image extensions
-image_extensions = ["png", "jpg", "jpeg", "gif", "svg"]
+// Create the games.js code
+const games = shuffledGames.map(game => {
+    const isRecommended = recommendedGames.has(game) ? "🔥 Recommended" : "";
+    const imageExtension = ["png", "jpg", "jpeg", "gif", "svg"][Math.floor(Math.random() * 5)];
+    return {
+        title: game.replace(/-/g, " ").toUpperCase(),
+        image: `public/assets/images/${game}.${imageExtension}`,
+        url: `public/assets/fonts/${game}/`,
+        recommended: isRecommended
+    };
+});
 
-for game in games_list:
-    recommended = "🔥 Recommended" if game in recommended_games else ""
-    
-    # Randomly select one of the allowed extensions for each game
-    image_extension = random.choice(image_extensions)
-    
-    games_js_code += f"""
-    {{
-        title: '{game.replace("-", " ").title()}',
-        image: 'public/assets/images/{game}.{image_extension}',
-        url: 'public/assets/fonts/{game}/',
-        recommended: '{recommended}'
-    }},
-"""
-games_js_code = games_js_code.rstrip(',') + "\n];\n"
-
-games_js_code += """
-// Function to display game cards
+// Function to display games dynamically
 function displayGames() {
     const container = document.getElementById('game-cards');
     games.forEach(game => {
         const card = document.createElement('div');
         card.classList.add('game-card');
-        
+
         const img = document.createElement('img');
         img.src = game.image;
         img.alt = game.title;
@@ -107,8 +97,4 @@ function displayGames() {
     });
 }
 
-// Call the function to display games
 displayGames();
-"""
-
-
