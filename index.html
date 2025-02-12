@@ -46,7 +46,7 @@
             display: inline-block;
             text-align: center;
             width: 150px;
-            height: 200px;
+            height: 150px;
             padding: 15px;
             margin: 10px;
             background-color: #444;
@@ -54,12 +54,11 @@
             border: 2px solid transparent;
             transition: .2s;
             cursor: pointer;
-            position: relative;
         }
 
         .game-card img {
             width: 100%;
-            height: 100px;
+            height: 100%;
             border-radius: 5px;
         }
 
@@ -78,13 +77,16 @@
             font-weight: bold;
             font-size: 14px;
             margin-top: 5px;
-            display: block;
         }
 
         /* Keyframe Animation for Fade-in */
         @keyframes fade-in {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
         }
     </style>
 </head>
@@ -98,64 +100,55 @@
     </div>
 
     <!-- Link to games.js file -->
-    <script src="games.js"></script>
+    <script src="/mnt/data/games.js"></script>
 
     <script>
-        // Ensure games.js is loaded
-        document.addEventListener("DOMContentLoaded", function () {
-            if (typeof games === "undefined" || !Array.isArray(games) || games.length === 0) {
-                console.error("Error: games.js not loaded or empty.");
-                return;
-            }
+        // Function to display the games dynamically
+        function displayGames() {
+            const container = document.getElementById('game-cards');
+            games.forEach(game => {
+                const card = document.createElement('div');
+                card.classList.add('game-card');
+                
+                const img = document.createElement('img');
+                img.src = game.image;
+                img.alt = game.title;
 
-            function displayGames() {
-                const container = document.getElementById('game-cards');
-                container.innerHTML = ""; // Clear any existing content
+                const title = document.createElement('h3');
+                title.textContent = game.title;
 
-                games.forEach(game => {
-                    const card = document.createElement('div');
-                    card.classList.add('game-card');
+                const link = document.createElement('a');
+                link.href = game.url;
+                link.textContent = 'Play Now';
 
-                    const img = document.createElement('img');
-                    img.src = game.image;
-                    img.alt = game.title;
+                const recommended = document.createElement('span');
+                recommended.textContent = game.recommended;
+                recommended.classList.add('recommended');
 
-                    const title = document.createElement('h3');
-                    title.textContent = game.title;
+                card.appendChild(img);
+                card.appendChild(title);
+                card.appendChild(link);
+                card.appendChild(recommended);
 
-                    const link = document.createElement('a');
-                    link.href = game.url;
-                    link.textContent = 'Play Now';
+                container.appendChild(card);
+            });
+        }
 
-                    const recommended = document.createElement('span');
-                    if (game.recommended.trim() !== "") {
-                        recommended.textContent = game.recommended;
-                        recommended.classList.add('recommended');
-                    }
+        // Call the function to display the games once the page is loaded
+        window.onload = displayGames;
 
-                    card.appendChild(img);
-                    card.appendChild(title);
-                    card.appendChild(link);
-                    if (game.recommended.trim() !== "") {
-                        card.appendChild(recommended);
-                    }
-
-                    container.appendChild(card);
-                });
-            }
-
-            // Display games when the page loads
-            displayGames();
-
-            // Search Bar Filtering Function
-            document.getElementById('search-bar').addEventListener('input', function () {
-                const searchText = this.value.toLowerCase();
-                const gameCards = document.querySelectorAll('.game-card');
-
-                gameCards.forEach(card => {
-                    const title = card.querySelector('h3').textContent.toLowerCase();
-                    card.style.display = title.includes(searchText) ? "" : "none";
-                });
+        // Search Bar Filtering Function
+        document.getElementById('search-bar').addEventListener('input', function() {
+            const searchText = this.value.toLowerCase();
+            const gameCards = document.querySelectorAll('.game-card');
+            
+            gameCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                if (title.includes(searchText)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
             });
         });
     </script>
