@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Collection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+      <style>
+    body {
+        font-family: 'Orbitron', sans-serif;
+        background-color: #121212;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Fire Background */
+    #fire-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        background: black;
+    }
+
+    .search-container {
+        margin-bottom: 20px;
+    }
+
+    #searchBar {
+        padding: 10px;
+        width: 80%;
+        max-width: 400px;
+        border-radius: 5px;
+        border: none;
+        font-size: 16px;
+        background: rgba(255, 99, 71, 0.2);
+        color: white;
+    }
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .game-card {
+        background: rgba(30, 30, 30, 0.9);
+        padding: 20px;
+        border-radius: 15px;
+        width: 200px;
+        text-align: center;
+        transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+        cursor: pointer;
+        position: relative;
+        box-shadow: 0 0 20px rgba(255, 69, 0, 0.5);
+    }
+
+    .game-card:hover {
+        transform: scale(1.05);
+        background: rgba(255, 69, 0, 0.3);
+        box-shadow: 0 0 30px rgba(255, 69, 0, 0.8);
+    }
+
+    .game-card img {
+        width: 120px;
+        height: 120px;
+        border-radius: 10px;
+        object-fit: cover;
+        border: 2px solid rgba(255, 69, 0, 0.5);
+        margin-bottom: 10px;
+    }
+
+    .game-card p {
+        font-size: 16px;
+        font-weight: bold;
+        color: #ff4500;
+        margin-top: 10px;
+    }
+
+    .recommended {
+        font-size: 14px;
+        color: white;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 5px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .recommended .fa-fire {
+        color: #ff4500;
+        margin-right: 5px;
+    }
+</style>
+
+    </style>
+</head>
+<body>
+
+    <canvas id="fire-bg"></canvas>
+
+    <h1>Game Collection</h1>
+
+    <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Search for a game..." onkeyup="filterGames()">
+    </div>
+
+    <div class="container" id="gameList"></div>
+
+    <script>
+        const games = [
+            "10-minutes-till-dawn", "2048", "among-us", "basketball-stars", "bitlife",
+            "cookie-clicker", "drift-boss", "eggy-car", "geometry-dash", "happy-wheels",
+            "monkey-mart", "moto-x3m", "retro-bowl", "rooftop-snipers", "slope",
+            "smash-karts", "superhot", "tanuki-sunset", "tunnel-rush", "vex-7"
+        ];
+
+        function getImagePaths(gameName) {
+            const variations = [
+                gameName,
+                gameName.replace(/-/g, ''),
+                gameName.toLowerCase(),
+                gameName.replace(/-/g, '').toLowerCase()
+            ];
+
+            const extensions = [".png", ".jpg", ".avif", ".webp", ".jpeg"];
+            let paths = [];
+
+            variations.forEach(name => {
+                extensions.forEach(ext => {
+                    paths.push(`public/assets/images/${name}${ext}`);
+                });
+            });
+
+            return paths;
+        }
+
+        function loadGames() {
+            const gameList = document.getElementById("gameList");
+            gameList.innerHTML = '';
+
+            let shuffledGames = games.sort(() => 0.5 - Math.random());
+
+            shuffledGames.forEach((game, index) => {
+                let gameCard = document.createElement("div");
+                gameCard.classList.add("game-card");
+
+                let image = document.createElement("img");
+                let imagePaths = getImagePaths(game);
+                image.src = imagePaths[0];
+
+                image.onerror = function () {
+                    let fallbackImages = imagePaths.slice(1);
+                    for (let i = 0; i < fallbackImages.length; i++) {
+                        let fallbackImage = new Image();
+                        fallbackImage.src = fallbackImages[i];
+                        fallbackImage.onload = function () {
+                            image.src = fallbackImages[i];
+                            return;
+                        };
+                    }
+                    image.src = "public/assets/images/default-game.png";
+                };
+
+                let title = document.createElement("p");
+                title.innerHTML = game.replace(/-/g, ' ');
+
+                if (index % 8 === 0) {
+                    const fireContainer = document.createElement("div");
+                    fireContainer.classList.add("recommended");
+
+                    const fireIcon = document.createElement("span");
+                    fireIcon.classList.add("fas", "fa-fire");
+
+                    const fireText = document.createElement("span");
+                    fireText.innerText = "Hot";
+
+                    fireContainer.appendChild(fireIcon);
+                    fireContainer.appendChild(fireText);
+                    gameCard.appendChild(fireContainer);
+                }
+
+                gameCard.appendChild(image);
+                gameCard.appendChild(title);
+                gameCard.onclick = () => window.location.href = `public/assets/fonts/${game}`;
+
+                gameList.appendChild(gameCard);
+            });
+        }
+
+        function filterGames() {
+            let query = document.getElementById("searchBar").value.toLowerCase();
+            let gameCards = document.querySelectorAll(".game-card");
+
+            gameCards.forEach(card => {
+                let title = card.querySelector("p").textContent.toLowerCase();
+                card.style.display = title.includes(query) ? "block" : "none";
+            });
+        }
+
+        loadGames();
+    </script>
+
+    <!-- WebGL Fire Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        let scene = new THREE.Scene();
+        let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        let renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('fire-bg'), alpha: true });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        let particles = new THREE.BufferGeometry();
+        let positions = [];
+        let sizes = [];
+
+        for (let i = 0; i < 300; i++) {
+            positions.push((Math.random() * 2 - 1) * window.innerWidth);
+            positions.push((Math.random() * 2 - 1) * window.innerHeight);
+            positions.push((Math.random() * 2 - 1) * 500);
+            sizes.push(Math.random() * 5 + 2);
+        }
+
+        particles.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        particles.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+
+        let particleMaterial = new THREE.PointsMaterial({ color: 0xff4500, size: 3, transparent: true, opacity: 0.8 });
+        let fireParticles = new THREE.Points(particles, particleMaterial);
+        scene.add(fireParticles);
+
+        camera.position.z = 300;
+
+        function animate() {
+            fireParticles.rotation.y += 0.002;
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+
+</body>
+</html>
