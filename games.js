@@ -110,15 +110,5 @@ function displayGames() {
 // Call the function to display games
 displayGames();
 """
-<script src="/games.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        if (typeof games !== "undefined" && games.length > 0) {
-            displayGames();
-        } else {
-            console.error("games array is empty or not defined.");
-        }
-    });
-</script>
 
 
