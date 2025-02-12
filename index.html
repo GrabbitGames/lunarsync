@@ -42,6 +42,7 @@
             text-align: center;
             transition: transform 0.2s;
             cursor: pointer;
+            position: relative; /* Needed for absolute positioning of fire logo */
         }
 
         .game-card:hover {
@@ -59,6 +60,18 @@
         .recommended {
             font-size: 18px;
             color: #ff6347;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .recommend-text {
+            font-size: 14px;
+            color: white;
+            margin-right: 5px;
         }
     </style>
 </head>
@@ -104,9 +117,8 @@
 
             // Shuffle games and select random recommended games
             let shuffledGames = games.sort(() => 0.5 - Math.random());
-            let recommendedGames = shuffledGames.slice(0, Math.floor(Math.random() * 7) + 2); 
 
-            shuffledGames.forEach(game => {
+            shuffledGames.forEach((game, index) => {
                 let gameCard = document.createElement("div");
                 gameCard.classList.add("game-card");
 
@@ -128,7 +140,20 @@
                 };
 
                 let title = document.createElement("p");
-                title.innerHTML = recommendedGames.includes(game) ? `<span class="recommended">🔥</span> ${game.replace(/-/g, ' ')}` : game.replace(/-/g, ' ');
+                title.innerHTML = game.replace(/-/g, ' ');
+
+                // Every 8th game is marked as recommended
+                if (index % 8 === 0) {
+                    const recommendText = document.createElement("span");
+                    recommendText.classList.add("recommend-text");
+                    recommendText.innerText = "Recommend";
+
+                    const fireIcon = document.createElement("span");
+                    fireIcon.classList.add("recommended");
+                    fireIcon.innerHTML = '<i class="fas fa-fire"></i>';
+                    gameCard.appendChild(recommendText);
+                    gameCard.appendChild(fireIcon);
+                }
 
                 gameCard.appendChild(image);
                 gameCard.appendChild(title);
