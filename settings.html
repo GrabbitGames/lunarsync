@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            transition: background 0.5s, color 0.5s, all 0.3s;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .setting-group {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #444;
+            color: white;
+            border: none;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .save-btn {
+            margin-top: 20px;
+            background-color: #ff6347;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Fire Theme */
+        body[data-theme="fire"] {
+            background: url('fire-bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+
+        /* Confetti Theme */
+        body[data-theme="confetti"] {
+            background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+            color: black;
+        }
+
+        /* Snow Theme */
+        body[data-theme="snow"] {
+            background-color: #1a1a1a;
+            color: #ddd;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Settings</h1>
+
+    <div class="setting-group">
+        <h2>Background Theme</h2>
+        <button onclick="setTheme('fire')">Fire</button>
+        <button onclick="setTheme('confetti')">Confetti</button>
+        <button onclick="setTheme('snow')">Snow</button>
+    </div>
+
+    <button class="save-btn" onclick="saveSettings()">Save Settings</button>
+
+    <!-- Confetti.js -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Snowfall.js -->
+    <script src="https://cdn.jsdelivr.net/npm/snowfall@2.1.0/snowfall.min.js"></script>
+
+    <!-- Fire.js (using Fire Particles with ashes) -->
+    <script src="https://cdn.jsdelivr.net/npm/fire-particles@1.0.0/fire-particles.min.js"></script>
+
+    <script>
+        // Set the default theme to fire
+        document.body.setAttribute("data-theme", "fire");
+
+        // Load the saved theme from localStorage if available
+        window.addEventListener('DOMContentLoaded', () => {
+            let savedTheme = localStorage.getItem("backgroundTheme") || "fire";
+            document.body.setAttribute("data-theme", savedTheme);
+
+            if (savedTheme === "confetti") {
+                startConfetti();
+            } else if (savedTheme === "fire") {
+                startFire();
+            } else if (savedTheme === "snow") {
+                startSnowfall();
+            }
+        });
+
+        // Change the theme when button is clicked
+        function setTheme(theme) {
+            localStorage.setItem("backgroundTheme", theme);
+            document.body.setAttribute("data-theme", theme);
+
+            if (theme === "confetti") {
+                startConfetti();
+                stopFire();
+                stopSnowfall();
+                changeColorTheme('confetti');
+            } else if (theme === "fire") {
+                startFire();
+                stopConfetti();
+                stopSnowfall();
+                changeColorTheme('fire');
+            } else if (theme === "snow") {
+                startSnowfall();
+                stopConfetti();
+                stopFire();
+                changeColorTheme('snow');
+            }
+        }
+
+        // Save settings
+        function saveSettings() {
+            alert("Settings saved successfully!");
+        }
+
+        // Change color theme based on the selected background theme
+        function changeColorTheme(theme) {
+            if (theme === 'fire') {
+                document.body.style.color = 'white';
+                document.querySelectorAll('button').forEach(button => {
+                    button.style.backgroundColor = '#ff6347';
+                    button.style.color = 'white';
+                });
+            } else if (theme === 'confetti') {
+                document.body.style.color = 'black';
+                document.querySelectorAll('button').forEach(button => {
+                    button.style.backgroundColor = '#444';
+                    button.style.color = 'black';
+                });
+            } else if (theme === 'snow') {
+                document.body.style.color = '#ddd';
+                document.querySelectorAll('button').forEach(button => {
+                    button.style.backgroundColor = '#444';
+                    button.style.color = '#ddd';
+                });
+            }
+        }
+
+        // Start Confetti animation
+        function startConfetti() {
+            confetti({
+                particleCount: 100,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0.5, y: 0.5 },
+                colors: ['#ff0000', '#00ff00', '#0000ff']
+            });
+        }
+
+        // Stop Confetti animation
+        function stopConfetti() {
+            confetti.reset();
+        }
+
+        // Start Snowfall animation
+        function startSnowfall() {
+            snowfall.start({ snowColor: "#FFFFFF" });
+        }
+
+        // Stop Snowfall animation
+        function stopSnowfall() {
+            snowfall.stop();
+        }
+
+        // Start Fire animation with fire particles
+        function startFire() {
+            fireParticles.start({
+                color: '#ff6347',
+                background: 'transparent'
+            });
+        }
+
+        // Stop Fire animation
+        function stopFire() {
+            fireParticles.stop();
+        }
+    </script>
+</body>
+</html>
