@@ -100,7 +100,7 @@
     </div>
 
     <!-- Link to games.js file -->
-    <script src="games.js"></script>
+    <script src="/games.js"></script>
 
     <script>
         // Function to display the games dynamically
@@ -153,4 +153,15 @@
         });
     </script>
 </body>
+    <script src="/games.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof games !== "undefined" && games.length > 0) {
+            displayGames();
+        } else {
+            console.error("games array is empty or not defined.");
+        }
+    });
+</script>
+
 </html>
