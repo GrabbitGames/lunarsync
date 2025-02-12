@@ -3,133 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Games</title>
+    <title>Game Collection</title>
     <style>
+        /* Add your CSS styles here */
         body {
             font-family: Arial, sans-serif;
-            background-color: #333;
+            background-color: #1a1a1a;
             color: #fff;
             margin: 0;
             padding: 0;
         }
-        .container {
-            margin: 0 auto;
-            text-align: center;
-            max-width: 1200px;
-        }
-        .search-bar {
-            width: 100%;
-            max-width: 400px;
-            padding: 10px;
-            margin: 20px 0;
-            border: 1px solid #444;
-            border-radius: 5px;
-            background-color: #444;
-            color: #fff;
-            font-size: 16px;
-        }
+
         .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
         }
+
         .game-card {
-            width: 150px;
-            height: 190px;
-            margin: 10px;
-            padding: 10px;
-            background-color: #444;
-            border-radius: 5px;
-            border: 2px solid transparent;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
             text-align: center;
-            transition: .2s;
-            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease;
         }
+
+        .game-card:hover {
+            transform: scale(1.05);
+        }
+
         .game-card img {
             width: 100%;
-            height: 100px;
-            border-radius: 5px;
+            height: 150px;
+            object-fit: cover;
         }
-        .game-card:hover {
-            background: rgba(255, 255, 255, 0.144);
-            border: 2px solid rgba(255, 255, 255, 0.26);
-            transform: scale(1.09);
+
+        .game-card h3 {
+            font-size: 18px;
+            margin: 10px 0;
         }
-        .recommended {
-            color: red;
-            font-weight: bold;
-            font-size: 14px;
-            margin-top: 5px;
-            display: block;
-        }
+
         .game-card a {
-            display: block;
-            margin-top: 5px;
-            text-decoration: none;
             color: #ff6347;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 10px;
+            border: 2px solid #ff6347;
+            border-radius: 5px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .game-card a:hover {
+            background-color: #ff6347;
+            color: #fff;
+        }
+
+        .recommended {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 99, 71, 0.8);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <input type="text" id="search-bar" class="search-bar" placeholder="Search for games...">
-        <div id="game-cards" class="button-container"></div>
-    </div>
 
-    <!-- Load games.js first -->
-    <script src="/games.js"></script>
+    <div id="game-cards" class="button-container"></div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            if (typeof games !== "undefined" && games.length > 0) {
-                displayGames();
-            } else {
-                console.error("Error: `games.js` is missing or `games` array is empty.");
+        // List of games (your original list)
+        const gamesList = [
+            "10minutestilldawn", "2048cupcakes", "2048", "3dminigolf", "asmallworldcup",
+            "agentwalkervsskibidi", "amongus", "animalarena", "armedforcesio", "awesometanks2",
+            "backrooms", "baconmaydie", "balldodge", "bankrobbery2", "bankrobbery", "basketrandom",
+            "basketballstars", "battlewheels", "battleops", "bigtowertinysquare", "bitlife",
+            "blockpost", "blumgiball", "blumgibloom", "blumgicastle", "blumgidragon", "blumgiracers", "blumgirocket",
+            "blumgislime", "blumgisoccer", "bouncybasketball", "buenosaires", "bulletbros", "bumpercars",
+            "burgerbounty", "burritobison", "candycrush", "chicago", "chickenmerge", "choppyorc", "classicbackgammon",
+            "clusterrush", "coloron", "cookieclicker", "coreball", "cowbay", "crazybikes", "crazycars", "crossyroad",
+            "csgo", "cyberpunkresistance", "dadish2", "dadish3", "dadish3d", "dadish", "dayofmeatcastle",
+            "dayofmeatradiation", "deathrun3d", "dreadheadparkour", "driftboss", "drivemad", "dune", "eaglercraft",
+            "economical2", "economical", "eggycar", "epicshooter", "fantasyfest", "fishsquad", "flipbros", "fourcolors",
+            "funnybattle2", "funnybattle", "funnyshooter2", "funnyshooter", "geometrydashscratch", "geometrydash",
+            "getawayshootout", "gladihoppers", "gobble", "golordigger", "gooberworld", "greeceodyssey",
+            "greybox", "gunspin", "happywheels", "hauntedhood", "hawaii", "headsoccer2023", "heftyshamandeluxe",
+            "hideandsmash", "hordekiller", "idleants", "idlebreakout", "idlefarmingbusiness", "idlegang",
+            "idlelightcity", "idlemineempire", "idlemoneytree", "idlepetbusiness", "idlestartup", "idletoplay",
+            "ironssnout", "jacksmith", "justfalllol", "karlsont", "kiwiclicker", "ks2teams",
+            "leveldevil", "london", "mastercheckers", "masterchess", "mergeparty", "mergetycoon", "mimelet", "monaco",
+            "monkeymart", "monkeytype", "monstertracks", "motox3m", "murder", "ngon", "neonflytron", "newsupermariobros",
+            "newyork", "nutsimulator", "ohh1", "ollythepaw", "onlyupparkour", "ovo2", "ovodimensions",
+            "ovo", "paperio2", "partytoons", "penaltyshooters", "plinko", "poorunny", "pooreddie", "popcatclassic",
+            "pr0xy", "presidentsim", "pushyourluck", "rabbitsamurai2", "rabbitsamurai", "racesurvivalarena",
+            "recoil", "retrocollegedash", "retrohighway", "rio", "rocketbuddy", "rocketderby", "rooftopsnipers2",
+            "rowdycitywrestling", "rushercrusher", "sausageflip", "savethehostages", "seoul", "shenzhen", "skibidi",
+            "snowrider3d", "soccerrandom", "soccerworldcup", "soccerworldcup2023", "soundboard", "spacething", "spacewars",
+            "squidbattle", "squidshooter", "stickmanfight", "stickmanrun", "stickmanbasketball", "stickmanhook",
+            "superbrawl", "superhot", "swerve", "swingo", "tabletennisworldtour", "tag2", "tag", "tanukisunset",
+            "templeboom", "thespearstickman", "timeshooter", "tinyfishing", "tokyo", "tombofmask", "tubejumpers",
+            "tunnelrush2", "tunnelrush", "turbomotorace", "underwater", "unicyclehero", "unicyclelegend", "vegasqueens",
+            "vex3", "vex4", "vex5", "vex6", "vex7", "vex8", "vexchallenges", "volleyrandom", "watermelon", "webecomewhatwebehold",
+            "wordleunlimited", "yohoho", "youvs100skibidi", "zombiesshooter"
+        ];
+
+        // Shuffle the list and pick recommended games
+        function shuffleGames(games) {
+            return games.sort(() => Math.random() - 0.5);
+        }
+
+        function addRecommended(games) {
+            const recommendedCount = Math.floor(Math.random() * 7) + 2; // 2 to 8 random games
+            const recommendedGames = new Set();
+            while (recommendedGames.size < recommendedCount) {
+                const randomGame = games[Math.floor(Math.random() * games.length)];
+                recommendedGames.add(randomGame);
             }
+            return recommendedGames;
+        }
+
+        const shuffledGames = shuffleGames(gamesList);
+        const recommendedGames = addRecommended(shuffledGames);
+
+        // Create the games.js code
+        const games = shuffledGames.map(game => {
+            const isRecommended = recommendedGames.has(game) ? "🔥 Recommended" : "";
+            return {
+                title: game.replace(/([a-z])([A-Z])/g, '$1 $2').toUpperCase(),
+                image: `/public/assets/images/${game}.png`, // Adjusted image path
+                url: `/public/assets/fonts/${game}/`,
+                recommended: isRecommended
+            };
         });
 
+        // Function to display games dynamically
         function displayGames() {
-            const container = document.getElementById("game-cards");
-            container.innerHTML = "";
-
+            const container = document.getElementById('game-cards');
             games.forEach(game => {
-                const card = document.createElement("div");
-                card.classList.add("game-card");
+                const card = document.createElement('div');
+                card.classList.add('game-card');
 
-                const img = document.createElement("img");
+                const img = document.createElement('img');
                 img.src = game.image;
                 img.alt = game.title;
 
-                const title = document.createElement("h3");
+                const title = document.createElement('h3');
                 title.textContent = game.title;
 
-                const link = document.createElement("a");
+                const link = document.createElement('a');
                 link.href = game.url;
-                link.textContent = "Play Now";
+                link.textContent = 'Play Now';
 
-                if (game.recommended) {
-                    const recommended = document.createElement("span");
-                    recommended.textContent = "🔥 Recommended";
-                    recommended.classList.add("recommended");
-                    card.appendChild(recommended);
-                }
+                const recommended = document.createElement('span');
+                recommended.textContent = game.recommended;
+                recommended.classList.add('recommended');
 
                 card.appendChild(img);
                 card.appendChild(title);
                 card.appendChild(link);
+                card.appendChild(recommended);
+
                 container.appendChild(card);
             });
         }
 
-        document.getElementById("search-bar").addEventListener("input", function () {
-            const searchText = this.value.toLowerCase();
-            const gameCards = document.querySelectorAll(".game-card");
-
-            gameCards.forEach(card => {
-                const title = card.querySelector("h3").textContent.toLowerCase();
-                card.style.display = title.includes(searchText) ? "" : "none";
-            });
-        });
+        displayGames();
     </script>
+
 </body>
 </html>
