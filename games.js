@@ -28,7 +28,7 @@ games_list = [
     "sniper-shot", "sniper-vs-sniper", "snow-rider-3d", "soccer-random", "soccer-skills-euro-cup", "soccer-skills-world-cup",
     "soundboard", "space-thing", "space-wars-battleground", "squid-battle-simulator", "squid-shooter", "stack",
     "stick-duel-battle", "stick-fighter", "stick-merge", "stickman-bike", "stickman-climb-2", "stickman-golf",
-    "stickman-hook-halloween", "stickman-hook", "super-fowlst-2", "super-fowlst", "super-tunnel-rush", "superbrawl",
+    "stickman-hook-halloween", "stickman-hook", "super-fowlst-2", "super-tunnel-rush", "superbrawl",
     "superhot", "swerve", "swingo", "table-tennis-world-tour", "tag-2", "tag", "tanuki-sunset", "temple-of-boom",
     "the-spear-stickman", "time-shooter-2", "time-shooter-3", "tiny-fishing", "tokyo", "tomb-of-the-mask", "tube-jumpers",
     "tunnel-rush-2", "tunnel-rush", "turbo-moto-racer", "underwater", "unicycle-hero", "unicycle-legend", "vegas-queens",
