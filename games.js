@@ -110,11 +110,15 @@ function displayGames() {
 // Call the function to display games
 displayGames();
 """
+<script src="/games.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof games !== "undefined" && games.length > 0) {
+            displayGames();
+        } else {
+            console.error("games array is empty or not defined.");
+        }
+    });
+</script>
 
-# Save the generated JavaScript code to a file
-file_path = "/mnt/data/games_updated.js"
-with open(file_path, "w") as file:
-    file.write(games_js_code)
-
-file_path
 
