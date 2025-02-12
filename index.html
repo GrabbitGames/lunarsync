@@ -4,10 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Games</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
         .container {
-            margin: 0 auto;
+            margin: 20px auto;
+            max-width: 90%;
+        }
+
+        input {
+            padding: 10px;
+            width: 50%;
+            margin: 20px auto;
+            display: block;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            outline: none;
             text-align: center;
         }
 
@@ -26,13 +46,13 @@
             flex-direction: column;
             text-align: center;
             width: 130px;
-            height: 130px;
+            height: 160px;
             text-decoration: none;
-            border: solid 2px transparent;
             border-radius: 8px;
             transition: .2s;
             background: rgba(255, 255, 255, 0.05);
             padding: 10px;
+            position: relative;
         }
 
         .square_btn img {
@@ -42,20 +62,22 @@
             border-radius: 6px;
         }
 
+        .square_btn span {
+            margin-top: 5px;
+            font-size: 14px;
+            color: white;
+        }
+
         .square_btn:hover {
             background: rgba(255, 255, 255, 0.15);
             transform: scale(1.1);
-            transition: 0.2s;
         }
 
-        input {
-            padding: 10px;
-            width: 50%;
-            margin: 20px auto;
-            display: block;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            outline: none;
+        .recommended {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 18px;
         }
     </style>
 </head>
@@ -103,6 +125,7 @@
     "vex-3", "vex-4", "vex-5", "vex-6", "vex-7", "vex-8", "vex-challenges", "volley-random", "watermelon-game",
     "we-become-what-we-behold", "wordle-unlimited", "yohoho-io", "you-vs-100-skibidi-toilets", "zombies-shooter-2"
 ];
+
         ];
 
         function generateImagePaths(gameName) {
@@ -131,13 +154,16 @@
             ];
         }
 
-        function createGameCard(gameName) {
+        function createGameCard(gameName, isRecommended) {
             const gameLink = document.createElement("a");
             gameLink.href = generateGamePaths(gameName)[0];
             gameLink.className = "square_btn";
 
             const img = document.createElement("img");
             img.alt = gameName;
+
+            const title = document.createElement("span");
+            title.textContent = gameName.replace(/-/g, ' ');
 
             const tryImages = generateImagePaths(gameName);
             let imgLoaded = false;
@@ -158,7 +184,15 @@
                 };
             });
 
+            if (isRecommended) {
+                const recommendedBadge = document.createElement("div");
+                recommendedBadge.className = "recommended";
+                recommendedBadge.textContent = "🔥";
+                gameLink.appendChild(recommendedBadge);
+            }
+
             gameLink.appendChild(img);
+            gameLink.appendChild(title);
             return gameLink;
         }
 
@@ -167,10 +201,14 @@
             gameList.innerHTML = "";
 
             const shuffledGames = games.sort(() => Math.random() - 0.5);
+            const recommendedIndexes = new Set();
+            while (recommendedIndexes.size < Math.floor(Math.random() * 7) + 2) {
+                recommendedIndexes.add(Math.floor(Math.random() * shuffledGames.length));
+            }
+
             shuffledGames.forEach((game, index) => {
-                const card = createGameCard(game);
-                if (index < 8) card.innerHTML += "🔥";
-                gameList.appendChild(card);
+                const isRecommended = recommendedIndexes.has(index);
+                gameList.appendChild(createGameCard(game, isRecommended));
             });
         }
 
