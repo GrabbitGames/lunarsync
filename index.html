@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game List</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin: 0 auto;
+            text-align: center;
+            max-width: 1200px;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            margin-top: 20px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #444;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        /* Button Container */
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        /* Individual Game Card */
+        .game-card {
+            display: inline-block;
+            text-align: center;
+            width: 150px;
+            height: 150px;
+            padding: 15px;
+            margin: 10px;
+            background-color: #444;
+            border-radius: 5px;
+            border: 2px solid transparent;
+            transition: .2s;
+            cursor: pointer;
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+        }
+
+        /* Hover Effect on Game Cards */
+        .game-card:hover {
+            background: rgba(255, 255, 255, 0.144);
+            color: white;
+            border: solid 2px rgba(255, 255, 255, 0.26);
+            transform: scale(1.09);
+            transition: 0.2s;
+        }
+
+        /* Recommended Games */
+        .recommended {
+            color: red;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Keyframe Animation for Fade-in */
+        @keyframes fade-in {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Search Bar -->
+        <input type="text" id="search-bar" class="search-bar" placeholder="Search for games...">
+
+        <!-- Game Cards -->
+        <div id="game-cards" class="button-container"></div>
+    </div>
+
+    <script src="games.js"></script> <!-- Link to the external games.js file -->
+
+    <script>
+        // Function to display the games dynamically
+        function displayGames() {
+            const container = document.getElementById('game-cards');
+            games.forEach(game => {
+                const card = document.createElement('div');
+                card.classList.add('game-card');
+                
+                const img = document.createElement('img');
+                img.src = game.image;
+                img.alt = game.title;
+
+                const title = document.createElement('h3');
+                title.textContent = game.title;
+
+                const link = document.createElement('a');
+                link.href = game.url;
+                link.textContent = 'Play Now';
+
+                const recommended = document.createElement('span');
+                recommended.textContent = game.recommended;
+                recommended.classList.add('recommended');
+
+                card.appendChild(img);
+                card.appendChild(title);
+                card.appendChild(link);
+                card.appendChild(recommended);
+
+                container.appendChild(card);
+            });
+        }
+
+        // Call the function to display the games once the games.js file is loaded
+        window.onload = displayGames;
+
+        // Search Bar Filtering Function
+        document.getElementById('search-bar').addEventListener('input', function() {
+            const searchText = this.value.toLowerCase();
+            const gameCards = document.querySelectorAll('.game-card');
+            
+            gameCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                if (title.includes(searchText)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
