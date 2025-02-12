@@ -3,227 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Games</title>
+    <title>Game Collection</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #222;
+            background-color: #121212;
             color: white;
             text-align: center;
-            margin: 0;
-            padding: 0;
+            padding: 20px;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        #searchBar {
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
         }
 
         .container {
-            margin: 20px auto;
-            max-width: 90%;
-        }
-
-        input {
-            padding: 10px;
-            width: 50%;
-            margin: 20px auto;
-            display: block;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            outline: none;
-            text-align: center;
-        }
-
-        .button-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 15px;
-            margin-top: 20px;
         }
 
-        .square_btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
+        .game-card {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 10px;
+            width: 150px;
             text-align: center;
-            width: 130px;
-            height: 160px;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: .2s;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px;
-            position: relative;
+            transition: transform 0.2s;
+            cursor: pointer;
         }
 
-        .square_btn img {
+        .game-card:hover {
+            transform: scale(1.1);
+            background-color: #ff6347;
+        }
+
+        .game-card img {
             width: 100px;
             height: 100px;
+            border-radius: 5px;
             object-fit: cover;
-            border-radius: 6px;
-        }
-
-        .square_btn span {
-            margin-top: 5px;
-            font-size: 14px;
-            color: white;
-        }
-
-        .square_btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: scale(1.1);
         }
 
         .recommended {
-            position: absolute;
-            top: 5px;
-            right: 5px;
             font-size: 18px;
+            color: #ff6347;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Game Collection</h1>
-        <input type="text" id="search" placeholder="Search games...">
-        <div class="button-container" id="gameList"></div>
+
+    <h1>Game Collection</h1>
+
+    <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Search for a game..." onkeyup="filterGames()">
     </div>
+
+    <div class="container" id="gameList"></div>
 
     <script>
         const games = [
-            "10-minutes-till-dawn", "2048-cupcakes", "2048", "3d-mini-golf", "a-small-world-cup",
-    "agent-walker-vs-skibidi-toilets", "among-us", "animal-arena", "armed-forces-io", "awesome-tanks-2",
-    "backrooms", "bacon-may-die", "ball-dodge", "bank-robbery-2", "bank-robbery", "basket-random",
-    "basketball-stars", "battle-wheels", "battleops-the-polygon-online", "big-tower-tiny-square", "bitlife",
-    "blockpost", "blumgi-ball", "blumgi-bloom", "blumgi-castle", "blumgi-dragon", "blumgi-racers", "blumgi-rocket",
-    "blumgi-slime", "blumgi-soccer", "bouncy-basketball", "buenos-aires", "bullet-bros", "bumper-cars-soccer",
-    "burger-bounty", "burrito-bison", "candy-crush", "chicago", "chicken-merge", "choppy-orc", "classic-backgammon",
-    "cluster-rush", "coloron", "cookie-clicker", "core-ball", "cow-bay", "crazy-bikes", "crazy-cars", "crossy-road",
-    "csgo-clicker", "cyberpunk-resistance", "dadish-2", "dadish-3", "dadish-3d", "dadish", "day-of-meat-castle",
-    "day-of-meat-radiation", "death-run-3d", "dreadhead-parkour", "drift-boss", "drive-mad", "dune", "eaglercraft",
-    "economical-2", "economical", "eggy-car", "epic-shooter", "fantasy-fest", "fish-squad", "flip-bros", "four-colors",
-    "funny-battle-2", "funny-battle", "funny-shooter-2", "funny-shooter", "geometry-dash-scratch", "geometry-dash",
-    "getaway-shootout", "gladihoppers", "gobble", "gold-digger-fr-vr", "golorfull", "goober-world", "greece-love-odyssey",
-    "grey-box-testing", "gunspin", "happy-wheels", "haunted-hood", "hawaii", "head-soccer-2023", "hefty-shaman-deluxe",
-    "hide-and-smash", "horde-killer-you-vs-100", "idle-ants", "idle-breakout", "idle-farming-business", "idle-gang",
-    "idle-light-city", "idle-mining-empire", "idle-money-tree", "idle-pet-business", "idle-startup-tycoon",
-    "idle-toilet-tycoon", "iron-snout", "jacksmith", "just-fall-lol", "karlsont", "kiwi-clicker", "ks-2-teams",
-    "level-devil", "london", "master-checkers", "master-chess", "merge-party", "merge-tycoon", "mimelet", "monaco",
-    "monkey-mart", "monkeytype-lite", "monster-tracks", "moto-x3m", "murder", "n-gon", "neon-flytron-cyberpunk-racer",
-    "new-super-mario-bros", "new-york", "nut-simulator", "ohh1", "olly-the-paw", "only-up-parkour", "ovo-2", "ovo-dimensions",
-    "ovo", "paper-io-2", "party-toons", "penalty-shooters-2", "plinko", "poor-bunny", "poor-eddie", "popcat-classic",
-    "pr0xy", "president-simulator", "push-your-luck", "rabbit-samurai-2", "rabbit-samurai", "race-survival-arena-king",
-    "recoil", "retro-bowl-college", "retro-bowl", "retro-highway", "rio", "rocket-buddy", "rocket-soccer-derby",
-    "rooftop-snipers-2", "rooftop-snipers", "roper", "rowdy-city-wrestling", "rusher-crusher", "sausage-flip",
-    "save-the-hostages", "seoul", "shenzhen-showdown", "ski-slopes", "skibidi-bosses-vs-cameraman", "slope", "smash-karts",
-    "sniper-shot", "sniper-vs-sniper", "snow-rider-3d", "soccer-random", "soccer-skills-euro-cup", "soccer-skills-world-cup",
-    "soundboard", "space-thing", "space-wars-battleground", "squid-battle-simulator", "squid-shooter", "stack",
-    "stick-duel-battle", "stick-fighter", "stick-merge", "stickman-bike", "stickman-climb-2", "stickman-golf",
-    "stickman-hook-halloween", "stickman-hook", "super-fowlst-2", "super-tunnel-rush", "superbrawl",
-    "superhot", "swerve", "swingo", "table-tennis-world-tour", "tag-2", "tag", "tanuki-sunset", "temple-of-boom",
-    "the-spear-stickman", "time-shooter-2", "time-shooter-3", "tiny-fishing", "tokyo", "tomb-of-the-mask", "tube-jumpers",
-    "tunnel-rush-2", "tunnel-rush", "turbo-moto-racer", "underwater", "unicycle-hero", "unicycle-legend", "vegas-queens",
-    "vex-3", "vex-4", "vex-5", "vex-6", "vex-7", "vex-8", "vex-challenges", "volley-random", "watermelon-game",
-    "we-become-what-we-behold", "wordle-unlimited", "yohoho-io", "you-vs-100-skibidi-toilets", "zombies-shooter-2"
-];
+            "1v1lol", "basket-random", "rooftop-snipers", "tunnel-rush", "vex-7", 
+            "cookie-clicker", "stickman-hook", "superhot", "10-minutes-till-dawn"
         ];
 
-        function generateImagePaths(gameName) {
-            return [
-                `public/assets/images/${gameName}.png`,
-                `public/assets/images/${gameName}.jpg`,
-                `public/assets/images/${gameName}.jpeg`,
-                `public/assets/images/${gameName.replace(/-/g, '')}.png`,
-                `public/assets/images/${gameName.replace(/-/g, '')}.jpg`,
-                `public/assets/images/${gameName.replace(/-/g, '')}.jpeg`,
-                `public/assets/images/${gameName.toLowerCase()}.png`,
-                `public/assets/images/${gameName.toLowerCase()}.jpg`,
-                `public/assets/images/${gameName.toLowerCase()}.jpeg`,
-                `public/assets/images/${gameName.replace(/-/g, '').toLowerCase()}.png`,
-                `public/assets/images/${gameName.replace(/-/g, '').toLowerCase()}.jpg`,
-                `public/assets/images/${gameName.replace(/-/g, '').toLowerCase()}.jpeg`
+        function getImagePaths(gameName) {
+            const variations = [
+                gameName,
+                gameName.replace(/-/g, ''),
+                gameName.toLowerCase(),
+                gameName.replace(/-/g, '').toLowerCase()
             ];
-        }
 
-        function generateGamePaths(gameName) {
-            return [
-                `public/assets/fonts/${gameName}.html`,
-                `public/assets/fonts/${gameName}`,
-                `public/assets/fonts/${gameName.replace(/-/g, '')}`,
-                `public/assets/fonts/${gameName.toLowerCase()}`,
-                `public/assets/fonts/${gameName.replace(/-/g, '').toLowerCase()}`
-            ];
-        }
+            const extensions = [".png", ".jpg", ".jpeg"];
+            let paths = [];
 
-        function createGameCard(gameName, isRecommended) {
-            const gameLink = document.createElement("a");
-            const gamePaths = generateGamePaths(gameName);
-            gameLink.href = gamePaths[0]; // Default game path
-            gameLink.className = "square_btn";
-
-            const img = document.createElement("img");
-            img.alt = gameName;
-
-            const title = document.createElement("span");
-            title.textContent = gameName.replace(/-/g, ' ');
-
-            const tryImages = generateImagePaths(gameName);
-            let imgLoaded = false;
-
-            tryImages.forEach((src, index) => {
-                const testImg = new Image();
-                testImg.src = src;
-                testImg.onload = () => {
-                    if (!imgLoaded) {
-                        img.src = src;
-                        imgLoaded = true;
-                    }
-                };
-                testImg.onerror = () => {
-                    if (index === tryImages.length - 1 && !imgLoaded) {
-                        img.src = "public/assets/images/default-game.png";
-                    }
-                };
+            variations.forEach(name => {
+                extensions.forEach(ext => {
+                    paths.push(`public/assets/images/${name}${ext}`);
+                });
             });
 
-            if (isRecommended) {
-                const recommendedBadge = document.createElement("div");
-                recommendedBadge.className = "recommended";
-                recommendedBadge.textContent = "🔥";
-                gameLink.appendChild(recommendedBadge);
-            }
-
-            gameLink.appendChild(img);
-            gameLink.appendChild(title);
-            return gameLink;
+            return paths;
         }
 
-        function displayGames() {
+        function loadGames() {
             const gameList = document.getElementById("gameList");
-            gameList.innerHTML = "";
+            gameList.innerHTML = '';
 
-            const shuffledGames = games.sort(() => Math.random() - 0.5);
-            const recommendedIndexes = new Set();
-            while (recommendedIndexes.size < Math.floor(Math.random() * 7) + 2) {
-                recommendedIndexes.add(Math.floor(Math.random() * shuffledGames.length));
-            }
+            // Shuffle games and select random recommended games
+            let shuffledGames = games.sort(() => 0.5 - Math.random());
+            let recommendedGames = shuffledGames.slice(0, Math.floor(Math.random() * 7) + 2); 
 
-            shuffledGames.forEach((game, index) => {
-                const isRecommended = recommendedIndexes.has(index);
-                gameList.appendChild(createGameCard(game, isRecommended));
+            shuffledGames.forEach(game => {
+                let gameCard = document.createElement("div");
+                gameCard.classList.add("game-card");
+
+                let image = document.createElement("img");
+                let imagePaths = getImagePaths(game);
+                image.src = imagePaths[0];
+                
+                image.onerror = function () {
+                    let fallbackImages = imagePaths.slice(1);
+                    for (let i = 0; i < fallbackImages.length; i++) {
+                        let fallbackImage = new Image();
+                        fallbackImage.src = fallbackImages[i];
+                        fallbackImage.onload = function () {
+                            image.src = fallbackImages[i];
+                            return;
+                        };
+                    }
+                    image.src = "public/assets/images/default-game.png"; // Default image if nothing loads
+                };
+
+                let title = document.createElement("p");
+                title.innerHTML = recommendedGames.includes(game) ? `<span class="recommended">🔥</span> ${game.replace(/-/g, ' ')}` : game.replace(/-/g, ' ');
+
+                gameCard.appendChild(image);
+                gameCard.appendChild(title);
+                gameCard.onclick = () => window.location.href = `public/assets/fonts/${game}`;
+
+                gameList.appendChild(gameCard);
             });
         }
 
-        document.getElementById("search").addEventListener("input", function() {
-            const searchValue = this.value.toLowerCase();
-            const gameCards = document.querySelectorAll(".square_btn");
+        function filterGames() {
+            let query = document.getElementById("searchBar").value.toLowerCase();
+            let gameCards = document.querySelectorAll(".game-card");
 
             gameCards.forEach(card => {
-                const gameName = card.href.split('/').pop().replace(/-/g, ' ').toLowerCase();
-                card.style.display = gameName.includes(searchValue) ? "block" : "none";
+                let title = card.querySelector("p").textContent.toLowerCase();
+                card.style.display = title.includes(query) ? "block" : "none";
             });
-        });
+        }
 
-        displayGames();
+        loadGames();
     </script>
+
 </body>
 </html>
