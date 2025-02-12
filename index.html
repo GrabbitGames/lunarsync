@@ -19,6 +19,18 @@
             text-align: center;
         }
 
+        /* Search Bar Styles */
+        #search-bar {
+            margin: 20px auto;
+            padding: 10px;
+            width: 80%;
+            font-size: 18px;
+            border: 2px solid #444;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+        }
+
         .button-container {
             display: flex;
             flex-wrap: wrap;
@@ -74,111 +86,112 @@
             0% {
                 opacity: 0;
             }
-
             100% {
                 opacity: 1;
             }
+        }
+
+        /* Highlight Recommended Game Card */
+        .recommended {
+            color: #ff6347;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div id="game-cards" class="button-container"></div>
+        <h1>Game Collection</h1>
+        <input id="search-bar" type="text" placeholder="Search for games...">
+        <div id="game-cards" class="button-container">
+            <!-- Game cards will be loaded here dynamically -->
+        </div>
     </div>
 
     <script>
-        // List of games (your original list)
+        // User's list of games
         const gamesList = [
-            "10minutestilldawn", "2048cupcakes", "2048", "3dminigolf", "asmallworldcup",
-            "agentwalkervsskibidi", "amongus", "animalarena", "armedforcesio", "awesometanks2",
-            "backrooms", "baconmaydie", "balldodge", "bankrobbery2", "bankrobbery", "basketrandom",
-            "basketballstars", "battlewheels", "battleops", "bigtowertinysquare", "bitlife",
-            "blockpost", "blumgiball", "blumgibloom", "blumgicastle", "blumgidragon", "blumgiracers", "blumgirocket",
-            "blumgislime", "blumgisoccer", "bouncybasketball", "buenosaires", "bulletbros", "bumpercars",
-            "burgerbounty", "burritobison", "candycrush", "chicago", "chickenmerge", "choppyorc", "classicbackgammon",
-            "clusterrush", "coloron", "cookieclicker", "coreball", "cowbay", "crazybikes", "crazycars", "crossyroad",
-            "csgo", "cyberpunkresistance", "dadish2", "dadish3", "dadish3d", "dadish", "dayofmeatcastle",
-            "dayofmeatradiation", "deathrun3d", "dreadheadparkour", "driftboss", "drivemad", "dune", "eaglercraft",
-            "economical2", "economical", "eggycar", "epicshooter", "fantasyfest", "fishsquad", "flipbros", "fourcolors",
-            "funnybattle2", "funnybattle", "funnyshooter2", "funnyshooter", "geometrydashscratch", "geometrydash",
-            "getawayshootout", "gladihoppers", "gobble", "golordiggerfrvr", "golorfull", "gooberworld", "greeceodyssey",
-            "greyboxtesting", "gunspin", "happywheels", "hauntedhood", "hawaii", "headsoccer2023", "heftyshamandeluxe",
-            "hideandsmash", "hordekiller", "idleants", "idlebreakout", "idlefarmingbusiness", "idlegang",
-            "idlelightcity", "idleminingempire", "idlemoneytree", "idlepetbusiness", "idlestartuptycoon",
-            "idletoliettycoon", "ironsnout", "jacksmith", "justfalllol", "karlsont", "kiwificlicker", "ks2teams",
-            "leveldevil", "london", "mastercheckers", "masterchess", "mergeparty", "mergetycoon", "mimelet", "monaco",
-            "monkeymart", "monkeytypelite", "monstertracks", "motox3m", "murder", "ngon", "neonflytron", "newsupermariobros",
-            "newyork"
+            "10-minutes-till-dawn", "2048-cupcakes", "2048", "3d-mini-golf", "a-small-world-cup",
+            "agent-walker-vs-skibidi-toilets", "among-us", "animal-arena", "armed-forces-io", "awesome-tanks-2",
+            "backrooms", "bacon-may-die", "ball-dodge", "bank-robbery-2", "bank-robbery", "basket-random",
+            "basketball-stars", "battle-wheels", "battleops-the-polygon-online", "big-tower-tiny-square", "bitlife",
+            "blockpost", "blumgi-ball", "blumgi-bloom", "blumgi-castle", "blumgi-dragon", "blumgi-racers", "blumgi-rocket",
+            "blumgi-slime", "blumgi-soccer", "bouncy-basketball", "buenos-aires", "bullet-bros", "bumper-cars-soccer",
+            "burger-bounty", "burrito-bison", "candy-crush", "chicago", "chicken-merge", "choppy-orc", "classic-backgammon",
+            "cluster-rush", "coloron", "cookie-clicker", "core-ball", "cow-bay", "crazy-bikes", "crazy-cars", "crossy-road",
+            "csgo-clicker", "cyberpunk-resistance", "dadish-2", "dadish-3", "dadish-3d", "dadish", "day-of-meat-castle",
+            "day-of-meat-radiation", "death-run-3d", "dreadhead-parkour", "drift-boss", "drive-mad", "dune", "eaglercraft",
+            "economical-2", "economical", "eggy-car", "epic-shooter", "fantasy-fest", "fish-squad", "flip-bros", "four-colors",
+            "funny-battle-2", "funny-battle", "funny-shooter-2", "funny-shooter", "geometry-dash-scratch", "geometry-dash",
+            "getaway-shootout", "gladihoppers", "gobble", "gold-digger-fr-vr", "golorfull", "goober-world", "greece-love-odyssey",
+            "grey-box-testing", "gunspin", "happy-wheels", "haunted-hood", "hawaii", "head-soccer-2023", "hefty-shaman-deluxe",
+            "hide-and-smash", "horde-killer-you-vs-100", "idle-ants", "idle-breakout", "idle-farming-business", "idle-gang",
+            "idle-light-city", "idle-mining-empire", "idle-money-tree", "idle-pet-business", "idle-startup-tycoon",
+            "idle-toilet-tycoon", "iron-snout", "jacksmith", "just-fall-lol", "karlsont", "kiwi-clicker", "ks-2-teams",
+            "level-devil", "london", "master-checkers", "master-chess", "merge-party", "merge-tycoon", "mimelet", "monaco",
+            "monkey-mart", "monkeytype-lite", "monster-tracks", "moto-x3m", "murder", "n-gon", "neon-flytron-cyberpunk-racer",
+            "new-super-mario-bros", "new-york", "nut-simulator", "ohh1", "olly-the-paw", "only-up-parkour", "ovo-2", "ovo-dimensions",
+            "ovo", "paper-io-2", "party-toons", "penalty-shooters-2", "plinko", "poor-bunny", "poor-eddie", "popcat-classic",
+            "pr0xy", "president-simulator", "push-your-luck", "rabbit-samurai-2", "rabbit-samurai", "race-survival-arena-king",
+            "recoil", "retro-bowl-college", "retro-bowl", "retro-highway", "rio", "rocket-buddy", "rocket-soccer-derby",
+            "rooftop-snipers-2", "rooftop-snipers", "roper", "rowdy-city-wrestling", "rusher-crusher", "sausage-flip",
+            "save-the-hostages", "seoul", "shenzhen-showdown", "ski-slopes", "skibidi-bosses-vs-cameraman", "slope", "smash-karts",
+            "sniper-shot", "sniper-vs-sniper", "snow-rider-3d", "soccer-random", "soccer-skills-euro-cup", "soccer-skills-world-cup",
+            "soundboard", "space-thing", "space-wars-battleground", "squid-battle-simulator", "squid-shooter", "stack",
+            "stick-duel-battle", "stick-fighter", "stick-merge", "stickman-bike", "stickman-climb-2", "stickman-golf",
+            "stickman-hook-halloween", "stickman-hook", "super-fowlst-2", "super-tunnel-rush", "superbrawl",
+            "superhot", "swerve", "swingo", "table-tennis-world-tour", "tag-2", "tag", "tanuki-sunset", "temple-of-boom",
+            "the-spear-stickman", "time-shooter-2", "time-shooter-3", "tiny-fishing", "tokyo", "tomb-of-the-mask", "tube-jumpers",
+            "tunnel-rush-2", "tunnel-rush", "turbo-moto-racer", "underwater", "unicycle-hero", "unicycle-legend", "vegas-queens",
+            "vex-3", "vex-4", "vex-5", "vex-6", "vex-7", "vex-8", "vex-challenges", "volley-random", "watermelon-game",
+            "we-become-what-we-behold", "wordle-unlimited", "yohoho-io", "you-vs-100-skibidi-toilets", "zombies-shooter-2"
         ];
 
         // Shuffle the games list
-        function shuffleArray(arr) {
-            for (let i = arr.length - 1; i > 0; i--) {
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
+                [array[i], array[j]] = [array[j], array[i]];
             }
         }
 
-        // Image fallback function
-        function getImageSrc(gameName) {
-            const imageBasePath = '/public/assets/images/';
-            const possibleExtensions = ['.png', '.jpg', '.jpeg', '.gif'];
+        // Generate Game Cards HTML
+        function generateGameCards(games) {
+            const gameCardsContainer = document.getElementById("game-cards");
+            gameCardsContainer.innerHTML = "";
+            games.forEach(game => {
+                const gameCard = document.createElement("button");
+                gameCard.classList.add("square_btn");
 
-            // Try all extensions
-            for (let ext of possibleExtensions) {
-                const variations = [
-                    gameName.toLowerCase(),
-                    gameName.toLowerCase().replace(/-/g, ''),
-                    gameName.toLowerCase().replace(/\s+/g, ''),
-                    gameName.toLowerCase().replace(/ /g, '-'),
-                    gameName.toUpperCase(),
-                ];
+                const gameImage = document.createElement("img");
+                gameImage.src = `public/assets/images/${game}.png`;
+                gameCard.appendChild(gameImage);
 
-                for (let variation of variations) {
-                    const imgPath = `${imageBasePath}${variation}${ext}`;
-                    const img = new Image();
-                    img.src = imgPath;
-                    img.onload = () => {
-                        return img.src;
-                    };
-                }
-            }
+                const gameLink = document.createElement("a");
+                gameLink.href = `public/assets/fonts/${game}`;
+                gameCard.appendChild(gameLink);
 
-            // Default image if none found
-            return '/public/assets/images/defaultgame.png';
-        }
-
-        // Create game cards dynamically
-        function loadGameCards() {
-            const gameCardsContainer = document.getElementById('game-cards');
-            shuffleArray(gamesList);
-
-            gamesList.forEach((game, index) => {
-                const gameCard = document.createElement('a');
-                gameCard.classList.add('square_btn');
-                gameCard.href = `/games/${game}.html`; // Assuming each game has its own page
-
-                const image = document.createElement('img');
-                image.src = getImageSrc(game);
-                gameCard.appendChild(image);
-
-                const title = document.createElement('h3');
-                title.textContent = game.replace(/([A-Z])/g, ' $1').trim(); // Convert camelCase to normal text
-                gameCard.appendChild(title);
-
-                if (index % 5 === 0) {  // Mark as "Recommended" every 5th game
-                    const recommendedLabel = document.createElement('div');
-                    recommendedLabel.classList.add('recommended');
-                    recommendedLabel.textContent = '🔥 Recommended';
-                    gameCard.appendChild(recommendedLabel);
+                if (Math.random() < 0.1) { // 10% chance of being recommended
+                    gameCard.classList.add("recommended");
+                    gameLink.innerHTML = "🔥 " + game;
+                } else {
+                    gameLink.innerHTML = game;
                 }
 
                 gameCardsContainer.appendChild(gameCard);
             });
         }
 
-        loadGameCards();
+        // Search function
+        document.getElementById("search-bar").addEventListener("input", function() {
+            const searchTerm = this.value.toLowerCase();
+            const filteredGames = gamesList.filter(game => game.toLowerCase().includes(searchTerm));
+            shuffleArray(filteredGames);
+            generateGameCards(filteredGames);
+        });
+
+        // Initialize game cards
+        shuffleArray(gamesList);
+        generateGameCards(gamesList);
     </script>
 
 </body>
